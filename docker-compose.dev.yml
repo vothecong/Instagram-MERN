@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:4.2
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=vothecong
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+      - MONGO_INITDB_DATABASE=DBInstagram
+    volumes:
+      - ./data/mongodb:/data/db
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - 4000:4000
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+    depends_on:
+      - mongo
+
+  client:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    container_name: client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    ports:
+      - 3000:3000
+
+volumes:
+  data:
+    driver: local
+    

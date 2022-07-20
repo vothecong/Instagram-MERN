@@ -8,21 +8,11 @@ const app = express();
 const port = process.env.PORT || 4000;
 const db = require("./configs/KEYS").URI;
 
-mongoose.connect(
-  db,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  },
-  (err) => {
-    if (err) {
-      console.log("connect feild!!", err);
-    } else {
-      console.log("connect success!!");
-    }
-  }
-);
+mongoose.connect(db).then(() => {
+  console.log("Connect mongodb Success!");
+}).catch(() => {
+  console.log("Connect mongodb Faild!");
+});
 
 mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({ extended: false }));
